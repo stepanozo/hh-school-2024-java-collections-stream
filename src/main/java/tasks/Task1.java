@@ -2,9 +2,8 @@ package tasks;
 
 import common.Person;
 import common.PersonService;
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
+
+import java.util.*;
 
 /*
 Задача 1
@@ -21,8 +20,20 @@ public class Task1 {
     this.personService = personService;
   }
 
+  //Асимптотика работы O(N)
   public List<Person> findOrderedPersons(List<Integer> personIds) {
     Set<Person> persons = personService.findPersons(personIds);
-    return Collections.emptyList();
+
+    Map<Integer, Person> personMap = new HashMap<>();
+
+    for(Person p: persons)
+      personMap.put(p.id(), p);
+
+    List<Person> sortedPersonList = new ArrayList<>();
+
+    for(Integer id : personIds)
+      sortedPersonList.add(personMap.get(id));
+
+    return sortedPersonList;
   }
 }
