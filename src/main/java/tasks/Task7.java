@@ -17,7 +17,7 @@ public class Task7 {
     return companies
             .stream()
             .flatMap(company -> company.getVacancies()
-                    .stream().map(Vacancy::getTitle)).collect(Collectors.toSet());
+                    .stream()).map(Vacancy::getTitle).collect(Collectors.toSet());
   }
 
 }

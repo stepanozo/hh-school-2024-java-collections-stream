@@ -18,13 +18,14 @@ public class Task6 {
   public static Set<String> getPersonDescriptions(Collection<Person> persons,
                                                   Map<Integer, Set<Integer>> personAreaIds,
                                                   Collection<Area> areas) {
-    Map<Integer, Area> idAndAreaMap = new HashMap<>();
-    for(Area area : areas) {
-      idAndAreaMap.put(area.getId(), area);
-    }
+    Map<Integer, Area> idAndAreaMap = areas.stream().collect(Collectors.toMap(Area::getId, area -> area));
     return persons.stream().flatMap(person -> personAreaIds.get(person.id())
                     .stream()
-                    .map(id -> person.firstName() + " - " +  idAndAreaMap.get(id).getName()))
+                    .map(id -> concatenateWithDash(person.firstName(), idAndAreaMap.get(id).getName())))
                     .collect(Collectors.toSet());
+  }
+
+  public static String concatenateWithDash(String s1, String s2){
+    return s1 + " - " + s2;
   }
 }

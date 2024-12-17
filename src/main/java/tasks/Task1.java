@@ -4,6 +4,7 @@ import common.Person;
 import common.PersonService;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 /*
 Задача 1
@@ -22,18 +23,9 @@ public class Task1 {
 
   //Асимптотика работы O(N)
   public List<Person> findOrderedPersons(List<Integer> personIds) {
-    Set<Person> persons = personService.findPersons(personIds);
-
-    Map<Integer, Person> personMap = new HashMap<>();
-
-    for(Person p: persons)
-      personMap.put(p.id(), p);
-
-    List<Person> sortedPersonList = new ArrayList<>();
-
-    for(Integer id : personIds)
-      sortedPersonList.add(personMap.get(id));
-
-    return sortedPersonList;
+      Map<Integer, Person> personMap = personService.findPersons(personIds)
+              .stream()
+              .collect(Collectors.toMap(Person::id, person -> person));
+    return personIds.stream().map(personMap::get).toList();
   }
 }

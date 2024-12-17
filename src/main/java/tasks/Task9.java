@@ -4,7 +4,6 @@ import common.Person;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -31,26 +30,24 @@ public class Task9 {
 
   // Зачем-то нужны различные имена этих же персон (без учета фальшивой разумеется)
   public Set<String> getDifferentNames(List<Person> persons) {
-    return getNames(persons).stream().collect(Collectors.toSet()); //distinct был удалён, поскольку здесь уже set, дубликаты уже удаляются
+    return new HashSet<>(getNames(persons)); //можно просто сделать HashSet, передав имена в конструктор
   }
 
   // Тут фронтовая логика, делаем за них работу - склеиваем ФИО
-  public String convertPersonToString(Person person) { //Переписал через оператор ?, стало компактнее
-    return (person.firstName() != null ? person.firstName() : "") +
-            (person.secondName() != null ? person.secondName() : "") +
-            (person.middleName() != null ? person.middleName() : "");
+  public String convertPersonToString(Person person) { //Переписал по комментарию на гитхабе
+    return person.firstName() + " " + person.secondName() + " " + person.middleName();
   }
 
   // словарь id персоны -> ее имя
-  public Map<Integer, String> getPersonNames(Collection<Person> persons) {
-    Map<Integer, String> map = new HashMap<>();
-      persons.forEach(person -> map.put(person.id(), convertPersonToString(person))); //Заменил цикл на foreach
-    return map;
+  public Map<Integer, String> getPersonNames(Collection<Person> persons) { //Заменил на создание через коллектор
+    return persons
+            .stream()
+            .collect(Collectors.toMap(Person::id, this::convertPersonToString));
   }
 
   // есть ли совпадающие в двух коллекциях персоны?
   public boolean hasSamePersons(Collection<Person> persons1, Collection<Person> persons2) {
-    return persons1.stream().anyMatch(persons2::contains); //Заменил на anyMatch
+    return persons1.stream().anyMatch(new HashSet<>(persons2)::contains); //Заменил на anyMatch
   }
 
   // Посчитать число четных чисел
@@ -65,6 +62,6 @@ public class Task9 {
     List<Integer> snapshot = new ArrayList<>(integers);
     Collections.shuffle(integers);
     Set<Integer> set = new HashSet<>(integers);
-    assert snapshot.toString().equals(set.toString()); //они равны, потому что toString их сортирует обратно?
+    assert snapshot.toString().equals(set.toString());
   }
 }
